@@ -87,8 +87,6 @@ private:
 
     int client_link_measurement_11k_req_caller(int numOfArgs);
 
-    int client_statistics_11k_req_caller(int numOfArgs);
-
     // Functions
 
     int enable_debug(int8_t isEnable = -1);
@@ -140,10 +138,6 @@ private:
                                     int channel = 0);
 
     int client_link_measurement_11k_req(std::string hostap_mac, std::string client_mac);
-
-    int client_statistics_11k_req(std::string hostap_mac, std::string client_mac,
-                                  uint8_t group_identity,
-                                  std::string peer_mac = net::network_utils::WILD_MAC_STRING);
 
     // Variables
     std::string temp_path;
