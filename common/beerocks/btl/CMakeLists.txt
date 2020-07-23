@@ -10,7 +10,7 @@ set(MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 # Build the library
 add_library(${PROJECT_NAME} ${btl_sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${prplmesh_VERSION} SOVERSION ${prplmesh_VERSION_MAJOR})
-target_link_libraries(${PROJECT_NAME} PRIVATE ieee1905_transport_messages PUBLIC bcl tlvf elpp btlvf mapfcommon)
+target_link_libraries(${PROJECT_NAME} PRIVATE prplmesh_hostapd ieee1905_transport_messages PUBLIC bcl tlvf elpp btlvf mapfcommon)
 
 # Include paths
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
