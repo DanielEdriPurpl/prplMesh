@@ -7,6 +7,7 @@
 scriptdir=$(dirname "$(readlink -f "${0}")")
 bf_plugins_dir=${scriptdir}/boardfarm_plugins
 bf_dir=$(realpath "${scriptdir}/../../boardfarm")
+resultdir=${scriptdir}/../logs/
 
 if [ -n "${PYTHONPATH}" ]; then
    PYTHONPATH="${bf_dir}:${bf_plugins_dir}:${scriptdir}:${PYTHONPATH}"
@@ -15,4 +16,14 @@ else
 fi
 export PYTHONPATH
 
-exec bft -c "${bf_plugins_dir}"/boardfarm_prplmesh/prplmesh_config.json -n prplmesh_docker -x test_flows
+bft -c "${bf_plugins_dir}"/boardfarm_prplmesh/prplmesh_config.json \
+        -n prplmesh_docker -x test_flows -o ${resultdir} \
+	|| exit $?
+
+failed_test_count=$(jq '.tests_fail' ${resultdir}/test_results.json)
+re='^[0-9]+$'
+if ! [[ "$failed_test_count" =~ $re ]]; then
+   echo "Unable to parse failed test count:" "$failed_test_count" \
+   && exit 2
+fi
+exit $failed_test_count
