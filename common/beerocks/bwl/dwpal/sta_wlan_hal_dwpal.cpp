@@ -558,7 +558,7 @@ int sta_wlan_hal_dwpal::add_network()
     // Send command
     if (!dwpal_send_cmd(cmd, &reply)) {
         LOG(ERROR) << "ADD_NETWORK failed!";
-        return false;
+        return -1;
     }
 
     // Return the newly added network ID
