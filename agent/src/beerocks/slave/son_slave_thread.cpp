@@ -1126,6 +1126,10 @@ bool slave_thread::handle_cmdu_control_message(Socket *sd,
         message_com::send_cmdu(monitor_socket, cmdu_tx);
         break;
     }
+    case beerocks_message::ACTION_CONTROL_MESSAGE_TO_RADIO_REQUEST: {
+        LOG(WARNING) << "received ACTION_CONTROL_MESSAGE_TO_RADIO_REQUEST";
+        break;
+    }
     default: {
         LOG(ERROR) << "Unknown CONTROL message, action_op: " << int(beerocks_header->action_op());
         return false;
