@@ -1409,6 +1409,16 @@ typedef struct sClient {
     }
 } __attribute__((packed)) sClient;
 
+typedef struct sMessageToRadio {
+    sMacAddr radio_mac;
+    void struct_swap(){
+        radio_mac.struct_swap();
+    }
+    void struct_init(){
+        radio_mac.struct_init();
+    }
+} __attribute__((packed)) sMessageToRadio;
+
 
 }; // close namespace: beerocks_message
 

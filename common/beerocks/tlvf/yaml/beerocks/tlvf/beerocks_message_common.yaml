@@ -1033,3 +1033,7 @@ sClient:
       Determines the period of time after which the client configuration should be cleared,
       0 - Never age.
       -1 - Not Configured.
+
+sMessageToRadio:
+  _type: struct
+  radio_mac: sMacAddr
