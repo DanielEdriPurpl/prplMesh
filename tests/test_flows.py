@@ -454,6 +454,18 @@ class TestFlows:
             if vap.ssid != b'N/A':
                 self.fail('Wrong SSID: {vap.ssid} instead torn down'.format(vap=vap))
 
+    def test_message_to_radio_cli(self):  
+        debug("BML_MESSAGE_TO_RADIO test at point")
+
+        for i in range(0, 2):
+            env.beerocks_cli_command("bml_message_to_radio {}".format(env.controller.radios[i].mac))
+            # Wait a bit for the message
+            time.sleep(3)
+            # Check controller
+            self.check_log(env.controller, "ACTION_BML_MESSAGE_TO_RADIO_REQUEST")
+            # Check agent
+            self.check_log(env.controller.radios[i], "ACTION_CONTROL_MESSAGE_TO_RADIO_REQUEST")
+
     def test_ap_config_bss_tear_down_cli(self):
         # Same test as the previous one but using CLI instead of dev_send_1905
 
