@@ -2294,8 +2294,6 @@ int cli_bml::client_get_client(const std::string &sta_mac)
                 ret += "5 Ghz,";
             if (val & BML_CLIENT_SELECTED_BANDS_6G)
                 ret += "6 Ghz,";
-            if (val & BML_CLIENT_SELECTED_BANDS_60G)
-                ret += "60 Ghz,";
 
             // remove ending comma
             if (!ret.empty() && (ret.back() == ',')) {

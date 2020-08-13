@@ -430,10 +430,6 @@ bool master_thread::handle_cmdu_1905_autoconfiguration_search(const std::string 
         tlvSupportedFreqBand->value() = ieee1905_1::tlvSupportedFreqBand::BAND_5G;
         break;
     }
-    case ieee1905_1::tlvAutoconfigFreqBand::IEEE_802_11_60_GHZ: {
-        tlvSupportedFreqBand->value() = ieee1905_1::tlvSupportedFreqBand::BAND_60G;
-        break;
-    }
     default: {
         LOG(ERROR) << "unknown autoconfig freq band, value=" << int(auto_config_freq_band);
         return false;
