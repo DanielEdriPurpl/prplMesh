@@ -19,13 +19,11 @@
 
 namespace WSC {
 
-enum eWscRfBands: uint8_t {
+enum eWscRfBands : uint8_t {
     WSC_RF_BAND_2GHZ = 0x1,
     WSC_RF_BAND_5GHZ = 0x2,
-    WSC_RF_BAND_60GHZ = 0x4,
 };
 
-
-}; // close namespace: WSC
+}; // namespace WSC
 
 #endif //_TLVF/WSC_EWSCRFBANDS_H_

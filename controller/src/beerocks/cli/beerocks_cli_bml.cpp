@@ -568,6 +568,9 @@ void cli_bml::setFunctionsMapAndArray()
     insertCommandToMap("bml_client_get_client", "<sta_mac>", "Get client with the given STA MAC.",
                        static_cast<pFunction>(&cli_bml::client_get_client_caller), 1, 1,
                        STRING_ARG);
+    insertCommandToMap("bml_message_to_radio", "<radio_mac>", "Append to radio's log.",
+                       static_cast<pFunction>(&cli_bml::bml_message_to_radio_caller), 1, 1,
+                       STRING_ARG);
     //bool insertCommandToMap(std::string command, std::string help_args, std::string help,  pFunction funcPtr, uint8_t minNumOfArgs, uint8_t maxNumOfArgs,
 }
 
@@ -1165,6 +1168,13 @@ int cli_bml::bml_channel_selection_caller(int numOfArgs)
 {
     if (numOfArgs == 2) {
         return channel_selection(args.stringArgs[0], args.stringArgs[1]);
+    }
+    return -1;
+}
+int cli_bml::bml_message_to_radio_caller(int numOfArgs)
+{
+    if (numOfArgs == 1) {
+        return message_to_radio(args.stringArgs[0]);
     }
     return -1;
 }
@@ -1873,6 +1883,15 @@ int cli_bml::channel_selection(const std::string &al_mac, const std::string &rui
     return 0;
 }
 
+int cli_bml::message_to_radio(const std::string &radio_mac)
+{
+    LOG(WARNING) << "message_to_radio at cli_bml.cpp";
+
+    int ret = bml_message_to_radio(ctx, radio_mac.c_str());
+    printBmlReturnVals("message_to_radio", ret);
+    return 0;
+}
+
 #ifdef BEEROCKS_RDKB
 int cli_bml::steering_set_group(uint32_t steeringGroupIndex, const std::string &str_cfg_2,
                                 const std::string &str_cfg_5)
@@ -2275,8 +2294,6 @@ int cli_bml::client_get_client(const std::string &sta_mac)
                 ret += "5 Ghz,";
             if (val & BML_CLIENT_SELECTED_BANDS_6G)
                 ret += "6 Ghz,";
-            if (val & BML_CLIENT_SELECTED_BANDS_60G)
-                ret += "60 Ghz,";
 
             // remove ending comma
             if (!ret.empty() && (ret.back() == ',')) {

@@ -1235,6 +1235,13 @@ int bml_internal::process_cmdu_header(std::shared_ptr<beerocks_header> beerocks_
                              << "but no one is waiting...";
             }
         } break;
+        case beerocks_message::ACTION_BML_MESSAGE_TO_RADIO_RESPONSE: {
+            //Signal any waiting threads
+            if (!wake_up(beerocks_message::ACTION_BML_MESSAGE_TO_RADIO_REQUEST, 0)) {
+                LOG(WARNING) << "Received ACTION_BML_CHANGE_MODULE_LOGGING_LEVEL_RESPONSE "
+                                "response, but no one is waiting...";
+            }
+        } break;
         default: {
             LOG(WARNING) << "unhandled header BML action type 0x" << std::hex
                          << int(beerocks_header->action_op());
@@ -3478,6 +3485,32 @@ int bml_internal::channel_selection(const char *al_mac, const char *ruid)
     }
 
     return BML_RET_OK;
+}
+
+int bml_internal::message_to_radio(const sMacAddr &radio_mac)
+{
+    LOG(DEBUG) << "ACTION_BML_MESSAGE_TO_RADIO_REQUEST at bml_internal.cpp";
+
+    auto request =
+        message_com::create_vs_message<beerocks_message::cACTION_BML_MESSAGE_TO_RADIO_REQUEST>(
+            cmdu_tx);
+
+    if (!request) {
+        LOG(ERROR) << "Failed building ACTION_BML_MESSAGE_TO_RADIO_REQUEST message!";
+        return (-BML_RET_OP_FAILED);
+    }
+
+    request->params().radio_mac = radio_mac;
+
+    int iRet = BML_RET_OK;
+
+    int result = 0;
+    if (send_bml_cmdu(result, request->get_action_op()) != BML_RET_OK) {
+        LOG(ERROR) << "Send ACTION_BML_MESSAGE_TO_RADIO_REQUEST failed";
+        return (-BML_RET_OP_FAILED);
+    }
+
+    return (iRet);
 }
 
 bool bml_internal::wake_up(uint8_t action_opcode, int value)

@@ -1714,6 +1714,46 @@ void son_management::handle_bml_message(Socket *sd,
         }
         break;
     }
+    case beerocks_message::ACTION_BML_MESSAGE_TO_RADIO_REQUEST: {
+        LOG(WARNING) << "ACTION_BML_MESSAGE_TO_RADIO_REQUEST at son_management";
+
+        auto bml_request =
+            beerocks_header->addClass<beerocks_message::cACTION_BML_MESSAGE_TO_RADIO_REQUEST>();
+        if (bml_request == nullptr) {
+            LOG(ERROR) << "addClass ACTION_BML_CHANGE_MODULE_LOGGING_LEVEL_REQUEST failed";
+            break;
+        }
+
+        auto request = message_com::create_vs_message<
+            beerocks_message::cACTION_CONTROL_MESSAGE_TO_RADIO_REQUEST>(cmdu_tx);
+
+        if (request == nullptr) {
+            LOG(ERROR) << "Failed building CACTION_BML_MESSAGE_TO_RADIO_REQUEST message!";
+            break;
+        }
+
+        request->params().radio_mac = bml_request->params().radio_mac;
+
+        std::string dst_mac = tlvf::mac_to_string(request->params().radio_mac);
+        auto agent_mac      = database.get_node_parent_ire(dst_mac);
+
+        bool try_me = son_actions::send_cmdu_to_agent(agent_mac, cmdu_tx, database, dst_mac);
+        if (!try_me)
+            printf("bad");
+        printf("good");
+        // send response
+        auto response =
+            message_com::create_vs_message<beerocks_message::cACTION_BML_MESSAGE_TO_RADIO_RESPONSE>(
+                cmdu_tx);
+        if (response == nullptr) {
+            LOG(ERROR) << "Failed building message!";
+            return;
+        }
+
+        LOG(DEBUG) << "request radio_mac:" << dst_mac;
+        message_com::send_cmdu(sd, cmdu_tx);
+        break;
+    }
 #ifdef BEEROCKS_RDKB
     case beerocks_message::ACTION_BML_STEERING_SET_GROUP_REQUEST: {
         LOG(TRACE) << "ACTION_BML_STEERING_SET_GROUP_REQUEST";
